@@ -14,5 +14,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - run: test -s docs/ai/README.md
+      - run: test -s docs/ai/agent-topology.md
       - run: test -s docs/ai/prompt-registry.md
       - run: test -s docs/ai/evals/content-quality.jsonl

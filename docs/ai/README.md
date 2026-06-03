@@ -10,6 +10,8 @@ configuration are intentionally absent.
 - `src/routes/pending.ts`: human review queue for drafts before publishing.
 - `src/telegram/handler.ts`: operator approval, regeneration, and scheduling loop.
 - `src/lib/publisher.ts`: deterministic queue processing after approval.
+- `docs/ai/agent-topology.md`: public map of the strategy, drafting, critic,
+  rewrite, scheduler, and analytics agents.
 
 ## Operating Model
 
