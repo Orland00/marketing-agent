@@ -1,0 +1,21 @@
+# Copy to `.dev.vars` for local dev. Variable names only — never commit real values.
+SUPABASE_URL=
+SUPABASE_SERVICE_KEY=
+ADMIN_SECRET=
+ANTHROPIC_API_KEY=
+
+# Telegram (approval / control bot)
+TELEGRAM_BOT_TOKEN=
+TELEGRAM_WEBHOOK_SECRET=
+TELEGRAM_ADMIN_CHAT_ID=
+
+# Meta (Facebook / Instagram publishing)
+META_PAGE_ACCESS_TOKEN=
+META_INSTAGRAM_BUSINESS_ID=
+META_FACEBOOK_PAGE_ID=
+
+# X / Twitter publishing
+TWITTER_API_KEY=
+TWITTER_API_SECRET=
+TWITTER_ACCESS_TOKEN=
+TWITTER_ACCESS_SECRET=

@@ -1,0 +1,25 @@
+name = "marketing-agent"
+main = "src/index.ts"
+compatibility_date = "2026-03-01"
+compatibility_flags = ["nodejs_compat"]
+
+[vars]
+ENVIRONMENT = "production"
+
+# R2 bucket for image storage (enable R2 in CF dashboard first)
+# [[r2_buckets]]
+# binding = "IMAGES_BUCKET"
+# bucket_name = "marketing-images"
+
+# Cron triggers (free tier: 5 total across all workers)
+[triggers]
+crons = [
+  "*/30 * * * *",  # Publish queue check every 30 min
+  "0 12 * * *"     # Daily brief + analytics pull at 6 AM CST
+]
+
+# Dev environment
+[env.dev]
+name = "marketing-agent-dev"
+[env.dev.vars]
+ENVIRONMENT = "development"
