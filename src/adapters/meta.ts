@@ -20,8 +20,10 @@ async function graphPost(
   return (await res.json()) as Record<string, unknown>;
 }
 
-async function graphGet(url: string): Promise<Record<string, unknown>> {
-  const res = await fetch(url);
+async function graphGet(url: string, accessToken: string): Promise<Record<string, unknown>> {
+  const res = await fetch(url, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
   return (await res.json()) as Record<string, unknown>;
 }
 
@@ -99,8 +101,10 @@ export class InstagramAdapter implements PlatformAdapter {
     const ig = accounts.instagram;
     if (!ig) throw new Error('Instagram account not configured');
 
-    const url = `${GRAPH_API}/${platformPostId}/insights?metric=impressions,reach,likes,comments,shares,saved&access_token=${ig.access_token}`;
-    const data = await graphGet(url);
+    const params = new URLSearchParams({
+      metric: 'impressions,reach,likes,comments,shares,saved',
+    });
+    const data = await graphGet(`${GRAPH_API}/${platformPostId}/insights?${params}`, ig.access_token);
     const metrics = (data.data || []) as Array<{
       name: string;
       values: Array<{ value: number }>;
@@ -176,8 +180,10 @@ export class FacebookAdapter implements PlatformAdapter {
     const fb = accounts.facebook;
     if (!fb) throw new Error('Facebook account not configured');
 
-    const url = `${GRAPH_API}/${platformPostId}/insights?metric=post_impressions,post_engaged_users,post_reactions_like_total,post_comments,post_shares&access_token=${fb.access_token}`;
-    const data = await graphGet(url);
+    const params = new URLSearchParams({
+      metric: 'post_impressions,post_engaged_users,post_reactions_like_total,post_comments,post_shares',
+    });
+    const data = await graphGet(`${GRAPH_API}/${platformPostId}/insights?${params}`, fb.access_token);
     const metrics = (data.data || []) as Array<{
       name: string;
       values: Array<{ value: number }>;
