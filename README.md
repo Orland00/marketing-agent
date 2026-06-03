@@ -41,6 +41,8 @@ publish on a schedule to Meta (Facebook / Instagram) and X.
 
 - **Multi-tenant by slug.** One Worker serves many brands via `/:slug` routes;
   brand config lives in `src/lib/product.ts`.
+- **AI operations layer** with prompt registry, public eval shells, and a
+  human-in-the-loop approval model (`docs/ai/`).
 - **Adapter pattern** isolates each social platform behind a common interface.
 - **Human-in-the-loop publishing** — nothing goes out without approval.
 - **Cron dispatcher** for the publish queue and daily analytics pulls.
