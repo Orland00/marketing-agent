@@ -43,6 +43,12 @@ publish on a schedule to Meta (Facebook / Instagram) and X.
   brand config lives in `src/lib/product.ts`.
 - **AI operations layer** with prompt registry, public eval shells, and a
   human-in-the-loop approval model (`docs/ai/`).
+- **Database-backed workflow** for tenants, prompts, drafts, queues, approvals,
+  schedules, publish results, and analytics snapshots.
+- **External API adapters** for model providers, Telegram, Meta Graph, X, object
+  storage, and Supabase.
+- **Queue-first production shape**: generation, review, publishing, retry, and
+  reporting are separated into explicit states.
 - **Adapter pattern** isolates each social platform behind a common interface.
 - **Human-in-the-loop publishing** — nothing goes out without approval.
 - **Cron dispatcher** for the publish queue and daily analytics pulls.
@@ -57,7 +63,11 @@ src/
   routes/     posts, campaigns, pending, accept/stats UIs, analytics, images
   telegram/   bot command + approval handler
 tests/        vitest unit tests
+docs/        public architecture + AI operations shell
 ```
+
+See [`docs/architecture.md`](./docs/architecture.md) for the sanitized database,
+API, queue, and provider integration map.
 
 ## Running locally
 
