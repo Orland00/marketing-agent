@@ -18,7 +18,44 @@ jobs:
       - run: npm ci
       - run: npm run typecheck
       - run: npm test
+
+      - name: Validate deploy configuration
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          CLOUDFLARE_API_TOKEN_REF: ${{ vars.OP_CLOUDFLARE_API_TOKEN_REF }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          set -euo pipefail
+
+          test -n "$OP_SERVICE_ACCOUNT_TOKEN"
+          case "$OP_SERVICE_ACCOUNT_TOKEN" in
+            ops_*) ;;
+            *)
+              echo "OP_SERVICE_ACCOUNT_TOKEN must be a valid 1Password service account token starting with ops_."
+              exit 1
+              ;;
+          esac
+          test -n "$CLOUDFLARE_ACCOUNT_ID"
+
+          for ref_name in CLOUDFLARE_API_TOKEN_REF; do
+            ref_value="${!ref_name}"
+            case "$ref_value" in
+              op://*) ;;
+              *)
+                echo "$ref_name must be configured as an op:// reference."
+                exit 1
+                ;;
+            esac
+          done
+
+      - name: Load deploy secrets
+        id: load_secrets
+        uses: 1password/load-secrets-action@92467eb28f72e8255933372f1e0707c567ce2259
+        env:
+          OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
+          CLOUDFLARE_API_TOKEN: ${{ vars.OP_CLOUDFLARE_API_TOKEN_REF }}
+
       - run: npm run deploy
         env:
-          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ steps.load_secrets.outputs.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
