@@ -4,7 +4,7 @@ import { getProductTheme, getAllProductSlugs } from '../lib/product.js';
 
 const acceptUi = new Hono<{ Bindings: Env }>();
 
-function buildHtml(slug: string) {
+export function buildHtml(slug: string) {
   const theme = getProductTheme(slug);
   const allSlugs = getAllProductSlugs();
 

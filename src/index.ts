@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import type { MiddlewareHandler } from 'hono';
 import { cors } from 'hono/cors';
 import type { Env, TelegramUpdate } from './types.js';
 import products from './routes/products.js';
@@ -14,6 +15,7 @@ import pending from './routes/pending.js';
 import acceptUi from './routes/accept-ui.js';
 import settingsApi from './routes/settings-api.js';
 import settingsUi from './routes/settings-ui.js';
+import { isAdminAuthorized, secretEquals } from './lib/auth.js';
 import { handleTelegramUpdate } from './telegram/handler.js';
 import { processPublishQueue, sendDailyBrief, pullAnalytics } from './lib/publisher.js';
 
@@ -32,13 +34,16 @@ app.use('/api/*', cors({
 }));
 
 // Admin auth for API routes
-app.use('/api/*', async (c, next) => {
-  const auth = c.req.header('Authorization');
-  if (!c.env.ADMIN_SECRET || !auth || auth !== `Bearer ${c.env.ADMIN_SECRET}`) {
+const requireAdmin: MiddlewareHandler<{ Bindings: Env }> = async (c, next) => {
+  if (!(await isAdminAuthorized(c.req.header('Authorization'), c.env.ADMIN_SECRET))) {
     return c.json({ error: 'Unauthorized' }, 401);
   }
   await next();
-});
+};
+app.use('/api/*', requireAdmin);
+// /stats usa SUPABASE_SERVICE_KEY: mismo esquema que /api (solo Bearer; la vista es HTML renderizada en servidor)
+app.use('/stats', requireAdmin);
+app.use('/stats/*', requireAdmin);
 
 // --- Routes ---
 
@@ -54,7 +59,7 @@ app.get('/health', (c) => {
 // Telegram webhook
 app.post('/webhooks/telegram', async (c) => {
   const secret = c.req.header('X-Telegram-Bot-Api-Secret-Token');
-  if (!c.env.TELEGRAM_WEBHOOK_SECRET || secret !== c.env.TELEGRAM_WEBHOOK_SECRET) {
+  if (!(await secretEquals(secret, c.env.TELEGRAM_WEBHOOK_SECRET))) {
     return c.json({ error: 'Invalid secret' }, 403);
   }
 
