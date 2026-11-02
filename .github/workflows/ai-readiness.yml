@@ -2,14 +2,18 @@ name: AI Readiness
 
 on:
   pull_request:
-  push:
     branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
 
 permissions:
   contents: read
 
 jobs:
   docs:
+    if: github.event.pull_request.draft != true
+    concurrency:
+      group: 'ai-readiness-${{ github.event.pull_request.number || github.ref }}'
+      cancel-in-progress: true
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
