@@ -42,7 +42,7 @@ async function renderStats(c: { env: Env; req: { param: (k: string) => string } 
     .single();
 
   if (!product) {
-    return `<html><body><h1>Product "${slug}" not found</h1></body></html>`;
+    return `<html><body><h1>Product "${esc(slug)}" not found</h1></body></html>`;
   }
 
   // Fetch posts with analytics

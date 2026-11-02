@@ -34,7 +34,7 @@ app.use('/api/*', cors({
 // Admin auth for API routes
 app.use('/api/*', async (c, next) => {
   const auth = c.req.header('Authorization');
-  if (!auth || auth !== `Bearer ${c.env.ADMIN_SECRET}`) {
+  if (!c.env.ADMIN_SECRET || !auth || auth !== `Bearer ${c.env.ADMIN_SECRET}`) {
     return c.json({ error: 'Unauthorized' }, 401);
   }
   await next();
@@ -54,7 +54,7 @@ app.get('/health', (c) => {
 // Telegram webhook
 app.post('/webhooks/telegram', async (c) => {
   const secret = c.req.header('X-Telegram-Bot-Api-Secret-Token');
-  if (secret !== c.env.TELEGRAM_WEBHOOK_SECRET) {
+  if (!c.env.TELEGRAM_WEBHOOK_SECRET || secret !== c.env.TELEGRAM_WEBHOOK_SECRET) {
     return c.json({ error: 'Invalid secret' }, 403);
   }
 
