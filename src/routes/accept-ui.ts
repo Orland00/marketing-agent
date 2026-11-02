@@ -532,7 +532,7 @@ function buildHtml(slug: string) {
 (function () {
   'use strict';
 
-  var currentSlug = '${slug}';
+  var currentSlug = ${JSON.stringify(slug).replace(/</g, '\\u003c')};
 
   var posts = [];
   var currentIndex = 0;
@@ -960,6 +960,7 @@ function buildHtml(slug: string) {
 // Route: /accept/:slug — product-specific accept UI
 acceptUi.get('/:slug', (c) => {
   const slug = c.req.param('slug');
+  if (!getAllProductSlugs().includes(slug)) return c.notFound();
   return c.html(buildHtml(slug));
 });
 
