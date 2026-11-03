@@ -54,7 +54,7 @@ jobs:
 
       - name: Load deploy secrets
         id: load_secrets
-        uses: 1password/load-secrets-action@92467eb28f72e8255933372f1e0707c567ce2259
+        uses: 1password/load-secrets-action@70062d7a876d3eb6334754fa26efd2fbd90c32f2
         env:
           OP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.OP_SERVICE_ACCOUNT_TOKEN }}
           CLOUDFLARE_API_TOKEN: ${{ vars.OP_CLOUDFLARE_API_TOKEN_REF }}
